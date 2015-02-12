@@ -73,6 +73,11 @@ void Flx_DateChooser::setDate( const MyDate &dt ) {
 	_date = dt;
 }
 
+void Flx_DateChooser::setDate( const char *date ) {
+    _date.SetDate( date );
+    _pOutputDate->value( _date.ToEurString().c_str() );
+}
+
 const MyDate &Flx_DateChooser::getDate() const {
 	return _date;
 }

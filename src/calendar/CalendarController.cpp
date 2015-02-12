@@ -41,7 +41,7 @@ CalendarController::CalendarController( Flx_Choice &m, Flx_Choice &y, DayTable &
 
 void CalendarController::onMonthYearChanged( Flx_Choice &, ActionParm & ) {
     int month = _months.value() + 1;
-    int year = _years.value() + 2010;
+    int year = _years.value() + MIN_YEAR;
     MyDate date( 1, month, year );
     setDate( date );
 }
@@ -49,7 +49,7 @@ void CalendarController::onMonthYearChanged( Flx_Choice &, ActionParm & ) {
 void CalendarController::setDate( const MyDate &dt ) {
 	setDays( dt.GetMonth(), dt.GetYear(), dt.GetDay() );
     _months.value( dt.GetMonth() - 1 );
-    _years.value( dt.GetYear() - 2010 );
+    _years.value( dt.GetYear() - MIN_YEAR );
 	//select new day:
 	_dayTbl.clearSelection();
 	int day = dt.GetDay();
@@ -124,7 +124,7 @@ void CalendarController::getSelectedDate( my::MyDate &date ) {
     const char *pDayNr = _daysModel.getValue( pCell->row, pCell->col );
     int dayNr = Convert::ToInt( pDayNr );
     int month = _months.value() + 1;
-    int year = _years.value() + 2010;
+    int year = _years.value() + MIN_YEAR;
     date.SetDate( dayNr, month, year );
 }
 

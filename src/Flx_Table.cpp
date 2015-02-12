@@ -1318,56 +1318,56 @@ void Flx_Table::setSortable(bool sortable) {
     _isSortable = sortable;
 }
 
-int Flx_Table::handle( int evt ) {
-    int rc = Fl_Table::handle( evt );
-	if( Fl::event_key() == FL_Escape ) return 1;
-    int rowTop, colLeft, rowBot, colRight;
-    get_selection( rowTop, colLeft, rowBot, colRight );
-    string name = "<unknown>";
-    Fl_Widget *w = Fl::focus();
-    if( w ) {
-        name = typeid( *w ).name();
-    } 
-    //fprintf( stderr, "Focus: %s\tselection: von %d/%d bis %d/%d\n", name.c_str(), rowTop, colLeft, rowBot, colRight );
-    return rc;
-}
-
-
 //int Flx_Table::handle( int evt ) {
 //    int rc = Fl_Table::handle( evt );
 //	if( Fl::event_key() == FL_Escape ) return 1;
-//    
-//    if( evt == FL_UNFOCUS ) {
-//        string name = "<unknown>";
-//        Fl_Widget *w = Fl::focus();
-//        if( w ) {
-//            name = typeid( *w ).name();
-//        } 
-//        fprintf( stderr, "Focus has %s\n", name.c_str() );
-//        
-//        //Fl::focus( this );
-//        return 0;
-//    }
-//    if( Fl::focus() == _pIn && 
-//        (evt == FL_KEYDOWN || evt == FL_RELEASE) && 
-//        (Fl::event_key() == FL_Tab || Fl::event_key() == FL_Enter ) ) 
-//    {
-//        return 1;
-//    }
-//
-//    if( evt != FL_MOVE && evt != FL_NO_EVENT )  fprintf( stderr, "event = %d\n", evt );
-//    
-//	if( evt == FL_DRAG || evt == FL_KEYDOWN || evt == FL_PUSH || evt == FL_RELEASE ) {
-//        setEventContext();
-//		handleEvents();
-//        CellPtr pCell = getFirstSelectedCell();
-//        fprintf( stderr, "event was: %d, selected cell: r/c = %d, %d\n", evt, pCell->row, pCell->col );
-//        
-//		return 1;
-//	}
-//	
+//    int rowTop, colLeft, rowBot, colRight;
+//    get_selection( rowTop, colLeft, rowBot, colRight );
+//    string name = "<unknown>";
+//    Fl_Widget *w = Fl::focus();
+//    if( w ) {
+//        name = typeid( *w ).name();
+//    } 
+//    //fprintf( stderr, "Focus: %s\tselection: von %d/%d bis %d/%d\n", name.c_str(), rowTop, colLeft, rowBot, colRight );
 //    return rc;
 //}
+
+
+int Flx_Table::handle( int evt ) {
+    int rc = Fl_Table::handle( evt );
+	if( Fl::event_key() == FL_Escape ) return 1;
+    
+    if( evt == FL_UNFOCUS ) {
+        string name = "<unknown>";
+        Fl_Widget *w = Fl::focus();
+        if( w ) {
+            name = typeid( *w ).name();
+        } 
+        //fprintf( stderr, "Focus has %s\n", name.c_str() );
+        
+        //Fl::focus( this );
+        return 0;
+    }
+    if( Fl::focus() == _pIn && 
+        (evt == FL_KEYDOWN || evt == FL_RELEASE) && 
+        (Fl::event_key() == FL_Tab || Fl::event_key() == FL_Enter ) ) 
+    {
+        return 1;
+    }
+
+    //if( evt != FL_MOVE && evt != FL_NO_EVENT )  fprintf( stderr, "event = %d\n", evt );
+    
+	if( evt == FL_DRAG || evt == FL_KEYDOWN || evt == FL_PUSH || evt == FL_RELEASE ) {
+        setEventContext();
+		handleEvents();
+        CellPtr pCell = getFirstSelectedCell();
+        //fprintf( stderr, "event was: %d, selected cell: r/c = %d, %d\n", evt, pCell->row, pCell->col );
+        
+		return 1;
+	}
+	
+    return rc;
+}
 
 /** Cares about de-selecting and selecting.
     Selection after hitting TAB and ENTER is not handled here. 

@@ -20,6 +20,12 @@ public:
 public:
 	Flx_DateChooser( int x, int y, int h, const char *pLabel=0 );
 	void setDate( const my::MyDate &dt );
+    
+    /**
+     * sets the inital date
+     * @param date "dd.mm.yyyy" oder "yyyy-mm-dd"
+     */
+    void setDate( const char *date );
 	const my::MyDate &getDate() const;
 	void onButtonHit( Flx_Button &, ActionParm & );
 private:
