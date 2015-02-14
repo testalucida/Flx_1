@@ -406,7 +406,10 @@ Flx_Table::Flx_Table( int x, int y, int w, int h, const char* L ) :
 		_colEdit( -1 ),
 		_pSearch( NULL ),
         _isAlternatingColumnColor( false ),
-        _isAlternatingRowColor( false )
+        _isAlternatingRowColor( false ),
+        _backgroundColor( FL_WHITE ),
+        _alternatingColumnColor( FL_WHITE ),
+        _alternatingRowColor( FL_WHITE )
 {
     _pWidget = this; //MANDATORY due to Flx_Base
 	//font default
@@ -662,28 +665,22 @@ Flx_TableDrawMode Flx_Table::checkDraw( int row, int col ) {
 }
 
 Fl_Color Flx_Table::getCellBackground( int row, int col, bool isSelected ) {
-    int rowTop, colLeft, rowBot, colRight;
-    get_selection( rowTop, colLeft, rowBot, colRight );
-    
-    if( row >= rowTop && row <= rowBot &&
-        col >= colLeft && col <= colRight )
-    {
-        return FL_YELLOW;
-    }
-    return FL_WHITE;
-    
-	if( isSelected ) return FL_YELLOW;
-    if( !_isAlternatingColumnColor ) return FL_WHITE;
-    unsigned int mask = 0xFFFFFFFE;  
 
-    Fl_Color colr = ( (col | mask) == mask ) ? fl_lighter( FL_GRAY ) : FL_WHITE;
-    if( _isAlternatingRowColor && 
-        ( colr == FL_WHITE ) && 
-        ( (row | mask) == mask ) ) 
-    {
-        colr = fl_lighter( FL_GRAY );
+	if( isSelected ) return FL_YELLOW;
+    
+    Fl_Color backColor = _backgroundColor;
+    
+    if( _isAlternatingColumnColor || _isAlternatingRowColor ) {        
+        if( _isAlternatingColumnColor ) {
+            int rem = col % 2;
+            if( rem != 0 ) backColor = _alternatingColumnColor;
+        }
+        if( _isAlternatingRowColor ) {
+            int rem = row % 2;
+            if( rem != 0 ) backColor = _alternatingRowColor;
+        }
     }
-    return colr;
+    return backColor;
 }
 
 void Flx_Table::alignContent( int colIdx, Fl_Align alignment ) {
@@ -1193,12 +1190,14 @@ void Flx_Table::clearSelection() {
 	redraw();
 }
 
-void Flx_Table::setAlternatingColumnColor( bool alternate ) {
-    _isAlternatingColumnColor = alternate;
+void Flx_Table::setAlternatingColumnColor( Fl_Color color ) {
+    _alternatingColumnColor = color;
+    _isAlternatingColumnColor = color == _backgroundColor ? false : true;
 }
 
-void Flx_Table::setAlternatingRowColor( bool alternate ) {
-    _isAlternatingRowColor = alternate;
+void Flx_Table::setAlternatingRowColor( Fl_Color color ) {
+    _alternatingRowColor = color;
+    _isAlternatingRowColor = color == _backgroundColor ? false : true;
 }
 
 void Flx_Table::mark( int row, int col ) {

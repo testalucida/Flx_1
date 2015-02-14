@@ -301,9 +301,9 @@ namespace flx {
 
 		void clearSelection();
         
-        void setAlternatingColumnColor( bool alternate );
+        void setAlternatingColumnColor( Fl_Color color = fl_lighter( fl_rgb_color( 242, 234, 255 ) ) );
         
-        void setAlternatingRowColor( bool alternate );
+        void setAlternatingRowColor( Fl_Color color = fl_lighter( fl_rgb_color( 242, 234, 255 ) ) );
 
         /** marks a cell. This means painting a blue rectangle 
             around the given cell */
@@ -561,6 +561,9 @@ namespace flx {
 		my::DataTablePtr _dataTablePtr; //serves only for storing the pointer
         bool _isAlternatingColumnColor;
         bool _isAlternatingRowColor;
+        Fl_Color _backgroundColor;
+        Fl_Color _alternatingColumnColor;
+        Fl_Color _alternatingRowColor;
     };
 
 }
