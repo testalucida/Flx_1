@@ -409,19 +409,26 @@ Flx_Table::Flx_Table( int x, int y, int w, int h, const char* L ) :
         _isAlternatingRowColor( false ),
         _backgroundColor( FL_WHITE ),
         _alternatingColumnColor( FL_WHITE ),
-        _alternatingRowColor( FL_WHITE )
+        _alternatingRowColor( FL_WHITE ),
+        _drawCellBorders( true )
 {
     _pWidget = this; //MANDATORY due to Flx_Base
+    
 	//font default
 	labelfont( 0 );
 	labelsize( 12 );
+    
 	// Rows
 	rows( 0 );
 	row_header( 1 ); // enable row headers (along left)
+    row_header_color( FL_LIGHT1 | FL_GRAY );
 	row_resize( 0 ); // disable row resizing
+    //row_height( 10 ); --> doesn't effect anything
+
 	// Cols
 	cols( 0 );
 	col_header( 1 ); // enable column headers (along top)
+    col_header_color( FL_LIGHT1 | FL_GRAY );
 	// default width of columns
 	col_resize( 1 ); // enable column resizing
 	//callback( &static_event_callback, (void*) ((this)) );
@@ -530,11 +537,16 @@ void Flx_Table::enableSorting( bool isSortable ) {
 
 /** Draw the col headings */
 void Flx_Table::drawColumnHeader( int col, const char* s, int x, int y, int w, int h ) {
-	fl_push_clip( x, y, w, h );
+	fl_push_clip( x-1, y, w, h );
 	Fl_Color colorMemo = color(); //dont't use fl_color(): won't compile in release config.
-	//fl_draw_box( FL_THIN_UP_BOX, x, y, w, h, _gotoCol == col ? _gotoColColor : col_header_color() );
-	fl_draw_box( FLX_GRADIENT_BORDER_BOX, x, y, w, h, _gotoCol == col ? _gotoColColor : col_header_color() );
-	if( _pData->getSortInfo().isSorted && _pData->getSortInfo().col == col ) {
+	fl_draw_box( FL_FLAT_BOX, x, y, w, h, _gotoCol == col ? _gotoColColor : col_header_color() );
+	//fl_draw_box( FLX_GRADIENT_BORDER_BOX, x, y, w, h, _gotoCol == col ? _gotoColColor : col_header_color() );
+	
+    //draw a vertical line between columns and a downsided horizontal one
+    fl_color ( FL_GRAY );
+    fl_line( x-1, y, x-1, y+h-1, x+w, y+h-1 );
+    
+    if( _pData->getSortInfo().isSorted && _pData->getSortInfo().col == col ) {
 		fl_color( fl_darker( col_header_color() ) );
 		drawSortedFlag( x, y, w, h, _pData->getSortInfo().sortDirection );
 		fl_pop_clip();
@@ -568,10 +580,16 @@ void Flx_Table::drawSortedFlag( int x, int y, int w, int h, SortDirection sortdi
 
 /** Draw the row headings */
 void Flx_Table::drawRowHeader( int row, const char* s, int x, int y, int w,	int h ) {
-	fl_push_clip( x, y, w, h );
+	fl_push_clip( x, y-1, w+1, h );
 	Fl_Color colorMemo = color(); //dont't use fl_color(): won't compile in release config.
-	//fl_draw_box( FL_THIN_UP_BOX, x, y, w, h, row_header_color() );
-	fl_draw_box( FLX_GRADIENT_BORDER_BOX, x, y, w, h, row_header_color() );
+    
+	fl_draw_box( FL_FLAT_BOX, x, y, w, h, row_header_color() );
+    
+    //draw horizontal line between rows and a vertical right sided line
+    fl_color ( FL_GRAY );
+    fl_line( x, y-1, x+w-1, y-1, x+w-1, y+h );
+    
+    //draw row number
 	fl_color (FL_BLACK);
 	fl_draw( s, x, y, w, h, FL_ALIGN_CENTER );
 	fl_color( colorMemo );
@@ -606,9 +624,10 @@ void Flx_Table::draw_cell( TableContext context, int row, int col, int x, int y,
 			if( drawMode == FLX_DRAW_NONE ) {
 				return;
 			}
-			//fl_push_clip( x, y, w, h );
+			fl_push_clip( x-1, y-1, w, h );
 			fl_rectf( x-1, y-1, w+2, h+2,
 					getCellBackground( row, col, ((drawMode == FLX_DRAW_SELECTED) ? true : false) ) );
+            
 			if( _pData ) { /* we have a model */
 				// draw text:
 				Fl_Color colorMemo = color();
@@ -617,6 +636,7 @@ void Flx_Table::draw_cell( TableContext context, int row, int col, int x, int y,
 				//fl_draw( "martin.kendel@@mail.com", x+1, y, w, h, _vAlign[col] );
 				fl_color( colorMemo );
 			}
+            
 			// Draw box border
 			if( row == _markedCell.row && col == _markedCell.col ) {
 				fl_rect( x, y, w, h, FL_BLUE );
@@ -624,9 +644,13 @@ void Flx_Table::draw_cell( TableContext context, int row, int col, int x, int y,
 			} else {
 				fl_color( color() );
 				//fl_rect( x, y, w, h );
-                fl_rect( x-1, y-1, w+2, h+2 );
+                if( _drawCellBorders ) {
+                    fl_rect( x-1, y-1, w+2, h+2 );
+                } else {
+                    fl_line( x-1, y-1, x-1, y+h );
+                }
 			}
-			//fl_pop_clip();
+			fl_pop_clip();
 			return;
 		}
 	default:
@@ -812,6 +836,8 @@ void Flx_Table::setTableData( TableData &data ) {
 	cols( _pData->getColumnCount() );
 	//adjustColWidth();
 	makeColumnsFit();
+//    this->labelsize( 11 );
+//    row_height_all( 17 );
 	redraw();
 }
 
@@ -1198,6 +1224,10 @@ void Flx_Table::setAlternatingColumnColor( Fl_Color color ) {
 void Flx_Table::setAlternatingRowColor( Fl_Color color ) {
     _alternatingRowColor = color;
     _isAlternatingRowColor = color == _backgroundColor ? false : true;
+}
+
+void Flx_Table::drawCellBorders( bool draw ) {
+    _drawCellBorders = draw;
 }
 
 void Flx_Table::mark( int row, int col ) {

@@ -15,14 +15,15 @@ Flx_ContextMenu::Flx_ContextMenu()
 {
     _pItemFactory = new Flx_MenuItemFactory( *this );
     
-    box( FLX_GRADIENT_BOX );
-	down_box( FLX_GRADIENT_DOWN_BOX );
+    box( FL_FLAT_BOX );
+	down_box( FL_FLAT_BOX );
 	labelfont( fl_font() );
 	labelsize( fl_size() );
 	textfont( fl_font() );
 	textsize( fl_size() );
-	Fl_Color colr = fl_color_average( fl_darker( fl_color() ), fl_lighter( fl_color() ), 0.5 );
-	selection_color( colr );
+    color( fl_rgb_color( 224, 224, 224 ) );
+    selection_color( FL_YELLOW ); //only effects a bright selection color
+    //selection_color( fl_rgb_color( 181, 181, 181 ) );
 }
 
 Flx_ContextMenu::~Flx_ContextMenu() {

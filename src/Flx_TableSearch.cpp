@@ -27,6 +27,8 @@ void Flx_TableSearch::start() {
 		_pDlg->signalSearch.connect< Flx_TableSearch, &Flx_TableSearch::onSearch >( this );
 		_pDlg->signalCancel.connect< Flx_TableSearch, &Flx_TableSearch::onCancel >( this );
 	}
+    
+    _pDlg->position( Fl::event_x_root(), Fl::event_y_root() );
 	_pDlg->show();
 }
 

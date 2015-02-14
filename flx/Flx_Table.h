@@ -304,7 +304,12 @@ namespace flx {
         void setAlternatingColumnColor( Fl_Color color = fl_lighter( fl_rgb_color( 242, 234, 255 ) ) );
         
         void setAlternatingRowColor( Fl_Color color = fl_lighter( fl_rgb_color( 242, 234, 255 ) ) );
-
+        
+        /** whether cell borders are to be drawn.
+         if this is set to false, vertical lines nevertheless will be drawn.
+         */
+        void drawCellBorders( bool draw );
+        
         /** marks a cell. This means painting a blue rectangle 
             around the given cell */
         void mark(int row, int col);
@@ -564,6 +569,7 @@ namespace flx {
         Fl_Color _backgroundColor;
         Fl_Color _alternatingColumnColor;
         Fl_Color _alternatingRowColor;
+        bool _drawCellBorders;
     };
 
 }
