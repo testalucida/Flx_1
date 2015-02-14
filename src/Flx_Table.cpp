@@ -60,11 +60,12 @@ const char *NEXTCOL = "\t";
 Flx_ColumnHeaderContextMenu::Flx_ColumnHeaderContextMenu()
 	: Flx_ContextMenu()
 {
+    this->textsize( 12 );
     //add(const char* label, int shortcut, Fl_Callback*, void *user_data=0, int flags=0)
 	add( SORT_ASC, 0, NULL, (void*)IDENT_SORT_ASC, FL_MENU_INACTIVE );
     add( SORT_DESC, 0, NULL, (void*)IDENT_SORT_DESC, FL_MENU_DIVIDER | FL_MENU_INACTIVE );
     //add( MARK, FL_CTRL+'m', NULL, NULL, 0 );
-    add( MARK, 0, NULL, NULL,  FL_MENU_INACTIVE );
+    add( MARK, 0, NULL, (void*)IDENT_MARK,  FL_MENU_INACTIVE );
 	add( COPY_COL_VALUES, 0, NULL, NULL, FL_MENU_DIVIDER | FL_SUBMENU );
 	add( COPY_WITH_SEP, 0, NULL, (void*)IDENT_COPY_WITH_SEP, 0 );
 	add( COPY_WITHOUT_SEP, 0, NULL, (void*)IDENT_COPY_WITHOUT_SEP, 0 );
@@ -454,6 +455,16 @@ Flx_Table::~Flx_Table() {
     delete _pCellMenu;
 }
 
+void Flx_Table::setNiceDefaults() {
+    row_header_color( fl_rgb_color( 221, 221, 221 ) );
+    col_header_color( row_header_color() );
+    
+    setAlternatingRowColor();
+    setSelectionMode( FLX_SELECTION_FREE );
+    drawCellBorders( false );
+    setSortable( true );
+}
+
 const char *Flx_Table::toString() const {
     return Flx_Base::toString();
 }
@@ -531,9 +542,6 @@ void Flx_Table::editNextRow() {
     }
 }
 
-void Flx_Table::enableSorting( bool isSortable ) {
-	_isSortable = isSortable;
-}
 
 /** Draw the col headings */
 void Flx_Table::drawColumnHeader( int col, const char* s, int x, int y, int w, int h ) {
@@ -1058,9 +1066,11 @@ void Flx_Table::showColumnHeaderContextMenu( int x, int y ) {
 	colhdrMenu.setActive( MARK,  (_selectionMode == FLX_SELECTION_FREE) );
 	colhdrMenu.setActive( SORT_ASC, _isSortable );
 	colhdrMenu.setActive( SORT_DESC, _isSortable );
+    
 	createAllColumnsSubmenu( colhdrMenu );
 	const Fl_Menu_Item* pItem = colhdrMenu.popup();
-	if( pItem ) {
+	
+    if( pItem ) {
 		ContextMenuIdent ident = (ContextMenuIdent)fl_intptr_t( pItem->user_data() );
 		switch( ident ) {
 		case IDENT_MARK:
@@ -1387,6 +1397,8 @@ int Flx_Table::handle( int evt ) {
     //if( evt != FL_MOVE && evt != FL_NO_EVENT )  fprintf( stderr, "event = %d\n", evt );
     
 	if( evt == FL_DRAG || evt == FL_KEYDOWN || evt == FL_PUSH || evt == FL_RELEASE ) {
+        if( _gotoCol > -1 ) _gotoCol = -1; //reset column headers color
+        
         setEventContext();
 		handleEvents();
         CellPtr pCell = getFirstSelectedCell();

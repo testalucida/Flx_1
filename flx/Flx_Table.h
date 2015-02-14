@@ -259,6 +259,12 @@ namespace flx {
 
         /** Dtor */
         virtual ~Flx_Table();
+        
+        /**
+         * makes the table look flat, sets alternating row colors etc.
+         * Try it ;)
+         */
+        void setNiceDefaults();
 
         // Flx_Base interface
         const char *toString() const;
@@ -281,8 +287,6 @@ namespace flx {
         /** get this Flx_Table's data model */
         my::TableData &getTableData() const;
         
-        /** switches sorting facility on/off */
-        void enableSorting(bool isSortable);
 
         /** Callback whenever someone clicks on different parts of the table */
 //        static void static_event_callback(Fl_Widget*, void *userdata) {
