@@ -856,28 +856,30 @@ void Flx_Table::setTableData( DataTablePtr dataTablePtr ) {
 
 void Flx_Table::labelsize( int size ) {
 	Fl_Table::labelsize( size );
-	fl_font( fl_font(), size );
+	//fl_font( fl_font(), size );
 	makeColumnsFit();	
 }
 
 void Flx_Table::makeColumnsFit() {
-	for( int c = 0, cmax = cols(); c < cmax; c++ ) {
-		int maxw = 0, w = 0, h = 0;
-		//const char *pHeader = _pData->getColumnHeader( c );
-		const char *pHeader = _pData->getColumnHeader( c );
-		fl_measure( _pData->getColumnHeader( c ), maxw, h, false );
-		if( maxw == 0 ) {
-			fl_font( 0, 12 );
-		}
-		maxw += 4; //some extra space for the column header
-		for( int r = 0, rmax = rows(); r < rmax; r++ ) {
-			w = 0;
-			//const char *pVal = _pData->getValue( r, c );
-			fl_measure( _pData->getValue( r, c ), w, h, false );
-			maxw = ( w > maxw ) ? w : maxw;
-		}
-		col_width( c, maxw+6 );
-	}
+	Fl_Font f = fl_font();
+    int fs = fl_size();
+    fl_font(labelfont(), labelsize());
+
+    for( int c = 0, cmax = cols(); c < cmax; c++ ) {
+        int maxw = 0, w = 0, h = 0;
+        fl_measure( _pData->getColumnHeader( c ), maxw, h, false );
+        maxw += 4; //some extra space for the column header
+        
+        for( int r = 0, rmax = rows(); r < rmax; r++ ) {
+            w = 0, h = 0;
+            fl_measure( _pData->getValue( r, c ), w, h, 1 );
+            maxw = ( w > maxw ) ? w : maxw;
+        }
+
+        col_width( c, maxw+6 );
+    }
+
+    fl_font(f, fs);
 }
 
 void Flx_Table::adjustColWidth() {

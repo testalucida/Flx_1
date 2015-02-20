@@ -69,6 +69,7 @@ Flx_ToolBar::Flx_ToolBar( int x, int y, int w, int h )
 	  _labelSuppressed( false ),
 	  _pStrut( new Fl_Box( x, y, w, 1 ) )
 {
+    box( FL_FLAT_BOX );
 	resizable( _pStrut );
 	end();
 }
