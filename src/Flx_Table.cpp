@@ -452,6 +452,8 @@ Flx_Table::Flx_Table( int x, int y, int w, int h, const char* L ) :
 
 Flx_Table::~Flx_Table() {
     if( _pSearch ) delete _pSearch;
+    _pCellMenu->signalShortcut.
+            disconnect< Flx_Table, &Flx_Table::onShortcut >( this );
     delete _pCellMenu;
 }
 
