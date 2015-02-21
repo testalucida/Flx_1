@@ -1024,7 +1024,7 @@ void Flx_Table::setEventContext() {
 	if( Fl::event() == FL_DRAG ) {
 		ResizeFlag flag;
 		TableContext tableContext = cursor2rowcol( draggingRow, draggingCol, flag );
-		if( draggingRow >= _pData->getRowCount() ) {
+		if( !_pData || draggingRow >= _pData->getRowCount() ) {
 			return;
 		}
 		if( draggingRow == _eventContext.row && draggingCol == _eventContext.col ) {
