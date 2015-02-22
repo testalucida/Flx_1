@@ -1517,7 +1517,8 @@ bool Flx_Table::checkSelection() {
 //		//just having ended edit mode by hitting TAB
 //		_selected.on( _eventContext.row, _eventContext.col );
 	} else {
-		throw ( "FLx_Table::checkSelection(): don't expect you to be here" );
+        //observed entering this branche when table is empty
+		//throw ( "FLx_Table::checkSelection(): don't expect you to be here" );
 	}
 
 	return true;
