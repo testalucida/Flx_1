@@ -1180,11 +1180,15 @@ void Flx_Table::showCellContextMenu( int x, int y ) {
 			}
 			_pSearch->start();
 		} 
-        MenuItemAction miaction;
-        miaction.ident = (int)pItem->user_data();
-        //miaction.pSelectedItem = const_cast<Fl_Menu_Item*>(pItem);
-        miaction.label = pItem->label();
-        signalContextMenuItemSelected.send( *_pCellMenu, miaction );
+        
+//        MenuItemAction miaction;
+//        miaction.ident = (int)pItem->user_data();
+//        miaction.label = pItem->label();
+//        signalContextMenuItemSelected.send( *_pCellMenu, miaction );
+        
+        
+         MenuItemAction *pAction = (MenuItemAction*)pItem->user_data();
+         signalContextMenuItemSelected.send( *_pCellMenu, *pAction );
 	}
 }
 
