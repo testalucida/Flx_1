@@ -403,6 +403,12 @@ namespace flx {
             It's up to us to use FLTK's drawing functions to draw the cells the way we want. */
         void draw_cell(TableContext context, int row = 0, int col = 0, int x = 0, int y = 0, int w = 0, int h = 0);
 
+        /** get the font to draw the cell's text */
+        virtual Fl_Font getFont( int row, int col, bool isSelected ) const;
+        
+        /** get the fontsize to draw the cell's text */
+        virtual Fl_Fontsize getFontSize( int row, int col, bool isSelected ) const;
+        
         /** gets the background color for the given cell */
         virtual Fl_Color getCellBackground(int row, int col, bool isSelected);
 

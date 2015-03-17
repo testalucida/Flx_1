@@ -639,12 +639,17 @@ void Flx_Table::draw_cell( TableContext context, int row, int col, int x, int y,
 					getCellBackground( row, col, ((drawMode == FLX_DRAW_SELECTED) ? true : false) ) );
             
 			if( _pData ) { /* we have a model */
+                Fl_Font fontMemo = fl_font();
+                Fl_Fontsize fontsizeMemo = fl_size();
+                fl_font( getFont( row, col, ((drawMode == FLX_DRAW_SELECTED) ? true : false) ), 
+                         getFontSize( row, col, ((drawMode == FLX_DRAW_SELECTED) ? true : false) ) );
 				// draw text:
 				Fl_Color colorMemo = color();
 				fl_color (FL_BLACK);
 				fl_draw( _pData->getValue( row, col ), x + 2, y, w - 4, h, _vAlign[col], NULL, 0 );
 				//fl_draw( "martin.kendel@@mail.com", x+1, y, w, h, _vAlign[col] );
 				fl_color( colorMemo );
+                fl_font( fontMemo, fontsizeMemo );
 			}
             
 			// Draw box border
@@ -696,6 +701,14 @@ Flx_TableDrawMode Flx_Table::checkDraw( int row, int col ) {
 		}
 	}
 	return FLX_DRAW_NONE;
+}
+
+Fl_Font Flx_Table::getFont( int row, int col, bool isSelected ) const {
+    return fl_font();
+}
+
+Fl_Fontsize Flx_Table::getFontSize( int row, int col, bool isSelected ) const {
+    return fl_size();
 }
 
 Fl_Color Flx_Table::getCellBackground( int row, int col, bool isSelected ) {
