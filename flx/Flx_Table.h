@@ -24,6 +24,10 @@
 class Fl_Input;
 class Fl_Menu_;
 
+namespace my {
+    class CharBuffer;
+}
+
 namespace flx {
 
     class Flx_Input;
@@ -47,6 +51,7 @@ namespace flx {
         void setEntriesCountItem(int rows);
     private:
         int _entryItemIdx;
+        my::CharBuffer _entryItemLabel;
     };
 
     //===========================================================

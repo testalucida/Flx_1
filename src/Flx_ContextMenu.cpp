@@ -62,7 +62,8 @@ void Flx_ContextMenu::replaceLabel( const char *pOldLabel,
 {
     for( int i = 0, imax = _pItemFactory->getMenuItemCount(); i < imax; i++ ) {
         Fl_Menu_Item &item = _pItemFactory->getMenuItem( i );
-        if( !strcmp( pOldLabel, item.label() ) ) {
+        const char *pLabel = item.label();
+        if( pLabel && !strcmp( pOldLabel, pLabel ) ) {
             item.label( pNewLabel );
             return;
         }

@@ -6,6 +6,7 @@
 
 #include <my/compat.h>
 #include <my/convert.h>
+#include <my/CharBuffer.h>
 
 #include <FL/fl_ask.H>
 #include <FL/Fl_Text_Buffer.H>
@@ -88,18 +89,19 @@ Flx_CellContextMenu::Flx_CellContextMenu()
 }
 
 void Flx_CellContextMenu::setEntriesCountItem( int rows ) {
-	char label[30];
-	strcpy( label, ENTRIES );
-	char intbuf[10];
-	sprintf( intbuf, "%d", rows );
-	strcat( label, intbuf );
+
 	if( _entryItemIdx < 0 ) {
+        _entryItemLabel.add( ENTRIES ).addInt( rows );
 		//_entryItemIdx = add( label, 0, NULL, NULL, FL_MENU_INACTIVE );
-        addMenuItem( label, (int)0, (int)0, -1, 
+        addMenuItem( _entryItemLabel.get(), (int)0, (int)0, -1, 
                     (const char**)NULL, (void*)NULL, FL_MENU_INACTIVE );
         _entryItemIdx = 0;
 	} else {
-		//replaceLabel(  );
+        CharBuffer oldLabel( _entryItemLabel );
+        _entryItemLabel.clear();
+        _entryItemLabel.add( ENTRIES ).addInt( rows );
+        fprintf( stderr, "old: %s, new: %s\n", oldLabel.get(), _entryItemLabel.get() );
+		replaceLabel( oldLabel.get(), _entryItemLabel.get() );
 	}
 }
 
@@ -1178,6 +1180,7 @@ void Flx_Table::checkAnchor() {
 
 void Flx_Table::showCellContextMenu( int x, int y ) {
 	_pCellMenu->setEntriesCountItem( _pData->getRowCount() );
+//    fprintf( stderr, "entries count: %d\n", _pData->getRowCount() );
     _pCellMenu->setActive( PASTE, true );
 	_pCellMenu->position( Fl::event_x(), Fl::event_y() );
 	const Fl_Menu_Item* pItem = _pCellMenu->popup();
@@ -1422,10 +1425,10 @@ int Flx_Table::handle( int evt ) {
         
         setEventContext();
 		handleEvents();
-        CellPtr pCell = getFirstSelectedCell();
+//        CellPtr pCell = getFirstSelectedCell();
         //fprintf( stderr, "event was: %d, selected cell: r/c = %d, %d\n", evt, pCell->row, pCell->col );
         
-		return 1;
+//		return 1;
 	}
 	
     return rc;
