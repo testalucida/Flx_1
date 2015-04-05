@@ -100,7 +100,7 @@ void Flx_CellContextMenu::setEntriesCountItem( int rows ) {
         CharBuffer oldLabel( _entryItemLabel );
         _entryItemLabel.clear();
         _entryItemLabel.add( ENTRIES ).addInt( rows );
-        fprintf( stderr, "old: %s, new: %s\n", oldLabel.get(), _entryItemLabel.get() );
+        //fprintf( stderr, "old: %s, new: %s\n", oldLabel.get(), _entryItemLabel.get() );
 		replaceLabel( oldLabel.get(), _entryItemLabel.get() );
 	}
 }
